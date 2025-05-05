@@ -25,7 +25,7 @@ class WallServiceTest {
     }
 
     @Test
-    fun updateTest() {
+    fun updateTestTrue() {
 
         for (i in 1 .. 5){
             val rnd = Random.nextInt(1, 1000)
@@ -34,9 +34,23 @@ class WallServiceTest {
 
         val result = WallService.update(
             Post(999,999,999,"Update", Comments(), Likes(), id = 2))
-        println(result)
 
-        assertTrue("Обновление поста", result)
+        assertTrue("Обновление поста для существующего id", result)
+
+    }
+
+    @Test
+    fun updateTestFalse() {
+
+        for (i in 1 .. 5){
+            val rnd = Random.nextInt(1, 1000)
+            WallService.add(Post(rnd,rnd+1,rnd+2,"Text $i", Comments(), Likes()))
+        }
+
+        val result = WallService.update(
+            Post(999,999,999,"Update", Comments(), Likes(), id = -1))
+
+        assertFalse("Обновление поста для несуществующего id", result)
 
     }
 
