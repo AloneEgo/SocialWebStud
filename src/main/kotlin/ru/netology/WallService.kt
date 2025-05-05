@@ -2,7 +2,7 @@ package ru.netology
 
 object WallService {
     private var posts = emptyArray<Post>()
-    private var nextId: Int = 0
+    private var nextId: Int = 1
 
     fun add(post: Post): Post {
 
@@ -30,7 +30,7 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
-        nextId = 0
+        nextId = 1
     }
 
 }
