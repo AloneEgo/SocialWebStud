@@ -1,9 +1,6 @@
 package ru.netology.attachments
 
-class StickerAttachment(
-    override val type: String = "sticker",
-    val sticker: Sticker
-) : Attachment
+class StickerAttachment(val sticker: Sticker) : Attachment("sticker")
 
 data class Sticker(
     val innerType: String = "base_sticker_new",
