@@ -18,7 +18,7 @@ object WallService {
 
         val targetId = post.id
 
-        for((index, eachPost) in posts.withIndex()){
+        for ((index, eachPost) in posts.withIndex()) {
             if (eachPost.id == targetId) {
                 posts[index] = post.copy()
                 return true
