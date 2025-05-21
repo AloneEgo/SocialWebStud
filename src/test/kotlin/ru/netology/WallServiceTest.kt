@@ -6,18 +6,39 @@ import org.junit.Test
 import kotlin.random.Random
 
 class WallServiceTest {
+    @Test
+    fun createCommentSuccess() {
+
+        val testComment = Comment(1, 2,3465,"Test", Donut(false,"123"),
+            0, 0, null, null, null)
+
+        val result = WallService.createComment(1, testComment)
+
+        assertEquals("Комментарий добавлен верно", testComment,result)
+    }
+
+    @Test(expected = PostNotFoundException::class)
+    fun createCommentFail() {
+
+        val testComment = Comment(1, 2,3465,"Test", Donut(false,"123"),
+            0, 0, null, null, null)
+
+        WallService.createComment(-1, testComment)
+
+    }
+
     @Before
     fun clearBeforeTest() {
         WallService.clear()
-    }
-
-    @Test
-    fun addTest() {
 
         for (i in 1 .. 5){
             val rnd = Random.nextInt(1, 1000)
             WallService.add(Post(rnd,rnd+1,rnd+2,"Text $i", Comments(), Likes()))
         }
+    }
+
+    @Test
+    fun addTest() {
 
         val result = WallService.add(Post(1,2,3,"Text", Comments(), Likes()))
 
@@ -26,11 +47,6 @@ class WallServiceTest {
 
     @Test
     fun updateTestTrue() {
-
-        for (i in 1 .. 5){
-            val rnd = Random.nextInt(1, 1000)
-            WallService.add(Post(rnd,rnd+1,rnd+2,"Text $i", Comments(), Likes()))
-        }
 
         val result = WallService.update(
             Post(999,999,999,"Update", Comments(), Likes(), id = 2))
@@ -41,11 +57,6 @@ class WallServiceTest {
 
     @Test
     fun updateTestFalse() {
-
-        for (i in 1 .. 5){
-            val rnd = Random.nextInt(1, 1000)
-            WallService.add(Post(rnd,rnd+1,rnd+2,"Text $i", Comments(), Likes()))
-        }
 
         val result = WallService.update(
             Post(999,999,999,"Update", Comments(), Likes(), id = -1))

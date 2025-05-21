@@ -7,13 +7,18 @@ object WallService {
 
     fun createComment(postId: Int, comment: Comment): Comment {
 
+        var success = false
+
         for (post in posts){
-            if (post.id != postId) throw PostNotFoundException("Запись не найдена")
+            if (post.id == postId){
+                comments += comment
+                success = true
+            }
         }
 
-        comments += comment
+        if (success)  return comments.last()
 
-        return comments.last()
+        throw PostNotFoundException("Запись не найдена")
     }
 
     fun add(post: Post): Post {
