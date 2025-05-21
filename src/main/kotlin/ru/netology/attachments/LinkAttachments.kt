@@ -1,6 +1,6 @@
 package ru.netology.attachments
 
-class LinkAttachment(val link: Link) : Attachment ("link")
+class LinkAttachments(val link: Link) : Attachments ("link")
 
 data class Link(
     val url: String,

@@ -1,6 +1,6 @@
 package ru.netology.attachments
 
-class PhotoAttachment(val photo: Photo) : Attachment("photo")
+class PhotoAttachments(val photo: Photo) : Attachments("photo")
 
 data class Photo(
     val id: Int,

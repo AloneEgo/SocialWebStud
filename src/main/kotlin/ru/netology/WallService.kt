@@ -3,6 +3,11 @@ package ru.netology
 object WallService {
     private var posts = emptyArray<Post>()
     private var nextId: Int = 1
+    private var comments = emptyArray<Comment>()
+
+    fun createComment(postId: Int, comment: Comment): Comment {
+        TODO()
+    }
 
     fun add(post: Post): Post {
 

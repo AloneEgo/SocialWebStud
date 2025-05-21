@@ -1,6 +1,6 @@
 package ru.netology.attachments
 
-class AudioAttachment(val audio: Audio) : Attachment ("audio")
+class AudioAttachments(val audio: Audio) : Attachments ("audio")
 
 data class Audio(
     val id: Int,
