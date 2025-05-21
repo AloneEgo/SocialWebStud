@@ -6,7 +6,14 @@ object WallService {
     private var comments = emptyArray<Comment>()
 
     fun createComment(postId: Int, comment: Comment): Comment {
-        TODO()
+
+        for (post in posts){
+            if (post.id != postId) throw PostNotFoundException("Запись не найдена")
+        }
+
+        comments += comment
+
+        return comments.last()
     }
 
     fun add(post: Post): Post {
