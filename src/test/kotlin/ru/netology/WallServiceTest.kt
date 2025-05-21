@@ -6,6 +6,44 @@ import org.junit.Test
 import kotlin.random.Random
 
 class WallServiceTest {
+
+    @Test
+    fun reportCommentSuccess() {
+
+        val testComment = Comment(1, 2,3465,"Test", Donut(false,"123"),
+            0, 0, null, null, null)
+
+        WallService.createComment(1, testComment)
+
+        val result = WallService.reportComment(1, 1, 0)
+
+        assertEquals("Комментарий добавлен верно", 1,result)
+    }
+
+    @Test(expected = TargetNotFoundException::class)
+    fun reportCommentFailCommentID() {
+
+        val testComment = Comment(1, 2,3465,"Test", Donut(false,"123"),
+            0, 0, null, null, null)
+
+        WallService.createComment(1, testComment)
+
+        WallService.reportComment(1, -1, 0)
+
+    }
+
+    @Test(expected = TargetNotFoundException::class)
+    fun reportCommentFailReason() {
+
+        val testComment = Comment(1, 2,3465,"Test", Donut(false,"123"),
+            0, 0, null, null, null)
+
+        WallService.createComment(1, testComment)
+
+        WallService.reportComment(1, 1, -1)
+
+    }
+
     @Test
     fun createCommentSuccess() {
 
@@ -17,7 +55,7 @@ class WallServiceTest {
         assertEquals("Комментарий добавлен верно", testComment,result)
     }
 
-    @Test(expected = PostNotFoundException::class)
+    @Test(expected = TargetNotFoundException::class)
     fun createCommentFail() {
 
         val testComment = Comment(1, 2,3465,"Test", Donut(false,"123"),
