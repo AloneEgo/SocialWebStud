@@ -68,6 +68,9 @@ object WallService {
     fun clear() {
         posts = emptyArray()
         nextId = 1
+        comments = emptyArray()
+        reports = emptyArray()
+        println("Очистка синглтона завершена.")
     }
 
     fun getComment(commentID: Int): Comment = comments[commentID]

@@ -7,6 +7,16 @@ import kotlin.random.Random
 
 class WallServiceTest {
 
+    @Before
+    fun clearBeforeTest() {
+        WallService.clear()
+
+        for (i in 1 .. 5){
+            val rnd = Random.nextInt(1, 1000)
+            WallService.add(Post(rnd,rnd+1,rnd+2,"Text $i", Comments(), Likes()))
+        }
+    }
+
     @Test
     fun reportCommentSuccess() {
 
@@ -63,16 +73,6 @@ class WallServiceTest {
 
         WallService.createComment(-1, testComment)
 
-    }
-
-    @Before
-    fun clearBeforeTest() {
-        WallService.clear()
-
-        for (i in 1 .. 5){
-            val rnd = Random.nextInt(1, 1000)
-            WallService.add(Post(rnd,rnd+1,rnd+2,"Text $i", Comments(), Likes()))
-        }
     }
 
     @Test
