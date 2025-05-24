@@ -5,6 +5,9 @@ abstract class CRUDService<T : Item> {
     protected var nextID: Int = 1
 
     fun getIndexById(id: Int): Int {
+
+        if (id < 1) throw TargetNotFoundException("Запись не найдена")
+
         for ((index, eachItem) in items.withIndex()) {
             if (eachItem.id == id) return index
         }
