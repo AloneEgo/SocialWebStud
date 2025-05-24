@@ -1,7 +1,6 @@
 package ru.netology
 
 import ru.netology.attachments.Attachments
-import java.lang.Thread
 
 data class Comment(
     val id: Int, // Идентификатор комментария
@@ -14,4 +13,4 @@ data class Comment(
     val attachments: Attachments?, //Медиавложения комментария
     val parentsStack: List<Int>?, //Массив идентификаторов родительских комментариев
     val thread: Thread?, //Информация о вложенной ветке комментариев
-    )
+)
