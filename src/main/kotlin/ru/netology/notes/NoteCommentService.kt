@@ -24,9 +24,6 @@ object NoteCommentService: CRUDService<NoteComment>() {
     }
 
     fun restoreComment(id: Int): Boolean{
-        val noteID = getIndexById(id)
-        val noteIndex = items[noteID].noteId
-
         return restore(id)
     }
 
@@ -36,10 +33,10 @@ object NoteCommentService: CRUDService<NoteComment>() {
         }
     }
 
-    //сделал заранее по аналогии с удалением
-    fun restoreCommentByNoteId(noteId: Int){
-        for (comment in items){
-            if (comment.noteId == noteId) restoreComment(comment.id)
-        }
-    }
+//сделал заранее по аналогии с удалением
+//    fun restoreCommentByNoteId(noteId: Int){
+//        for (comment in items){
+//            if (comment.noteId == noteId) restoreComment(comment.id)
+//        }
+//    }
 }

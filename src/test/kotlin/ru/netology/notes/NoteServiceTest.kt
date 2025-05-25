@@ -10,9 +10,7 @@ class NoteServiceTest {
     @Before
     fun cleatBeforeTest(){
         NoteService.clear()
-
-        val id = NoteService.add("Title", "Text")
-        val note = NoteService.getById(id)
+        NoteService.add("Title", "Text")
     }
 
     @Test
