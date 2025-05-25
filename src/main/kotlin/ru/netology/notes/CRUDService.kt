@@ -82,4 +82,9 @@ abstract class CRUDService<T : Item> {
         }
         throw TargetNotFoundException("Запись не удалена")
     }
+
+    fun clear(){
+        items.clear()
+        nextID = 1
+    }
 }
