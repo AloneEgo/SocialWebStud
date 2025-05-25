@@ -1,4 +1,7 @@
-package ru.netology
+package ru.netology.notes
+
+import ru.netology.notes.Item
+import ru.netology.TargetNotFoundException
 
 abstract class CRUDService<T : Item> {
     protected val items = mutableListOf<T>()
@@ -32,6 +35,10 @@ abstract class CRUDService<T : Item> {
 
         throw TargetNotFoundException("Запись не найдена")
 
+    }
+
+    fun readAll(): List<T>{
+        return items.filter{!it.isDeleted}
     }
 
     fun update(item: T): Boolean {

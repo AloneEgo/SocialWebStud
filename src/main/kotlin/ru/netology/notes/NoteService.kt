@@ -1,18 +1,12 @@
 package ru.netology.notes
 
-import ru.netology.CRUDService
-import kotlin.Int
-
 object NoteService: CRUDService<Note>() {
 
-    fun add(title: String, text: String, privacy: Int, commentPrivacy: Int,
-            privacyView: String, privacyComment: String): Int{
+    fun add(title: String, text: String): Int{
         val newNote = Note(
             id = nextID++,
             title = title,
-            text = text,
-            privacyView = privacyView,
-            canComment = commentPrivacy
+            text = text
         )
         create(newNote)
 
@@ -20,18 +14,20 @@ object NoteService: CRUDService<Note>() {
     }
 
     fun delete(noteId: Int): Boolean{
+        NoteCommentService.deleteCommentByNoteId(noteId)
         return delete(noteId, false)
     }
 
-    fun edit(noteId: Int, title: String, text: String, privacy: Int, commentPrivacy: Int,
-             privacyView: String, privacyComment: String): Boolean{
-        val newNote = items[getIndexById(noteId)].copy(title = title, text = text, privacyView = privacyView)
+    fun edit(noteId: Int, title: String, text: String): Boolean{
+        val newNote = items[getIndexById(noteId)].copy(title = title, text = text)
         return update(newNote)
     }
 
-    fun get(vararg notesId: Int, userId: Int, offset: Int, count: Int, sort: Int): Note{
-        for (i in 0..count){
-            read()
+    fun get(): List<Note>{
+        return readAll()
         }
+
+    fun getById(noteId: Int): Note{
+        return read(noteId)
     }
 }
