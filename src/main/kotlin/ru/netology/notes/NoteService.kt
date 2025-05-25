@@ -1,8 +1,8 @@
 package ru.netology.notes
 
-object NoteService: CRUDService<Note>() {
+object NoteService : CRUDService<Note>() {
 
-    fun add(title: String, text: String): Int{
+    fun add(title: String, text: String): Int {
         val newNote = Note(
             id = nextID++,
             title = title,
@@ -13,21 +13,21 @@ object NoteService: CRUDService<Note>() {
         return newNote.id
     }
 
-    fun delete(noteId: Int): Boolean{
+    fun delete(noteId: Int): Boolean {
         NoteCommentService.deleteCommentByNoteId(noteId)
         return delete(noteId, false)
     }
 
-    fun edit(noteId: Int, title: String, text: String): Boolean{
+    fun edit(noteId: Int, title: String, text: String): Boolean {
         val newNote = items[getIndexById(noteId)].copy(title = title, text = text)
         return update(newNote)
     }
 
-    fun get(): List<Note>{
+    fun get(): List<Note> {
         return readAll()
-        }
+    }
 
-    fun getById(noteId: Int): Note{
+    fun getById(noteId: Int): Note {
         return read(noteId)
     }
 }

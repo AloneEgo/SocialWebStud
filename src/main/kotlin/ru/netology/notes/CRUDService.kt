@@ -1,6 +1,5 @@
 package ru.netology.notes
 
-import ru.netology.notes.Item
 import ru.netology.TargetNotFoundException
 
 abstract class CRUDService<T : Item> {
@@ -37,8 +36,8 @@ abstract class CRUDService<T : Item> {
 
     }
 
-    fun readAll(): List<T>{
-        return items.filter{!it.isDeleted}
+    fun readAll(): List<T> {
+        return items.filter { !it.isDeleted }
     }
 
     fun update(item: T): Boolean {
@@ -83,7 +82,7 @@ abstract class CRUDService<T : Item> {
         throw TargetNotFoundException("Запись не удалена")
     }
 
-    fun clear(){
+    fun clear() {
         items.clear()
         nextID = 1
     }
