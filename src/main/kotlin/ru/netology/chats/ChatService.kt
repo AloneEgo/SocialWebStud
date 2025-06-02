@@ -51,42 +51,68 @@ object ChatService {
     }
 
     fun deleteMessage(chatId: Int, messageId: Int): Boolean {
-        TODO()
+        val chat = chats.findChatById(chatId)
+        val message = chat.messages.findMessageById(messageId)
+        return when {
+            message.isDeleted -> {
+                false
+            }
+            else -> {
+                message.isDeleted = true
+                chat.unreadMessagesID.remove(messageId)
+                true
+            }
+        }
     }
 
     fun editMessage(chatId: Int, messageId: Int, text: String): Boolean {
-        TODO()
+        val chat = chats.findChatById(chatId)
+        val message = chat.messages.findMessageById(messageId)
+        return when {
+            message.isDeleted -> {
+                false
+            }
+            else -> {
+                message.text = text
+                true
+            }
+        }
     }
 
-    private fun generateChat(fromUserId: Int, toUserId: Int): Chat{
+    private fun generateChat(fromUserId: Int, toUserId: Int): Chat {
         val newChat = Chat(setOf(fromUserId, toUserId))
         chats[generateChatId()] = newChat
         return newChat
     }
 
-    fun generateChatId(): Int = nextChatId++
+    private fun generateChatId(): Int = nextChatId++
 
     private fun generateMessageId(): Int = nextMessageId++
 
     private fun markMessagesAsRead(chat: Chat, messageIds: List<Int>) {
-
+        chat.unreadMessagesID.removeAll(messageIds)
     }
 
-    private fun setDate(): Long {
-        return System.currentTimeMillis()
+    private fun setDate(): Long = System.currentTimeMillis()
+
+    private fun Map<Int, Chat>.getUserChats(userId: Int): List<Chat> = this.values.filter { chat ->
+        !chat.isDeleted && userId in chat.participants
     }
 
-    private fun Map<Int, Chat>.getUserChats(userId: Int): List<Chat> {
-        return this.values.filter { chat ->
-            !chat.isDeleted && userId in chat.participants
-        }
+    private fun findChatByUsers(user1: Int, user2: Int): Chat? = chats.values.find { chat ->
+        !chat.isDeleted &&
+                chat.participants == setOf(user1, user2)
     }
 
-    private fun findChatByUsers(user1: Int, user2: Int): Chat? {
-        return chats.values.find { chat ->
-            !chat.isDeleted &&
-                    chat.participants == setOf(user1, user2)
-        }
-    }
+    private fun List<Message>.findMessageById(messageId: Int) =
+        this.find { it.id == messageId } ?: throw MessageNotFoundException("Сообщение не найдено")
 
+    private fun Map<Int, Chat>.findChatById(chatId: Int) =
+        this[chatId] ?: throw ChatNotFoundException("Чат не найден")
+
+    fun clear(){
+       chats.clear()
+       nextChatId = 1
+       nextMessageId = 1
+    }
 }
