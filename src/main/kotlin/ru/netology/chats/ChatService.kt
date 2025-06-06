@@ -44,12 +44,9 @@ object ChatService {
 
     fun sendMessage(fromUserId: Int, toUserId: Int, text: String) {
         val message = Message(generateMessageId(), fromUserId, text, setDate())
-
-        findChatByUsers(fromUserId, toUserId) ?: generateChat(fromUserId, toUserId)
-            .apply {
-                messages.add(message)
-                unreadMessagesID.add(message.id)
-            }
+        val chat = findChatByUsers(fromUserId, toUserId) ?: generateChat(fromUserId, toUserId)
+        chat.messages.add(message)
+        chat.unreadMessagesID.add(message.id)
     }
 
     fun deleteMessage(chatId: Int, messageId: Int): Boolean {
