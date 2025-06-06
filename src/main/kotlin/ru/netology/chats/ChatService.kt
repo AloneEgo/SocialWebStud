@@ -9,16 +9,18 @@ object ChatService {
 
     fun getUnreadChatsCount(userId: Int): Int {
         return chats.getUserChats(userId)
-            .count {
-                it.unreadMessagesID.isNotEmpty()
-            }
+            .asSequence()
+            .filter { it.unreadMessagesID.isNotEmpty() }
+            .count()
     }
 
     fun getLastMessages(userId: Int): List<String> {
         return chats.getUserChats(userId)
+            .asSequence()
             .map { chat ->
                 chat.messages.lastOrNull { !it.isDeleted }?.text ?: "нет сообщений"
             }
+            .toList()
     }
 
     fun getMessages(userId: Int, buddyId: Int, messagesCount: Int): List<Message> {
@@ -26,7 +28,9 @@ object ChatService {
             ?: throw ChatNotFoundException("Чат не найден")
 
         val messages = chat.messages
+            .asSequence()
             .filter { !it.isDeleted }
+            .toList()
             .takeLast(messagesCount)
 
         val messageIds = messages.map { it.id }
@@ -35,19 +39,17 @@ object ChatService {
         return messages
     }
 
-    fun deleteChat(chatId: Int) {
-        val chat = chats[chatId] ?: throw ChatNotFoundException("Чат не найден")
-        chat.isDeleted = true
-    }
+    fun deleteChat(chatId: Int) =
+        chats[chatId]?.apply { isDeleted = true } ?: throw ChatNotFoundException("Чат не найден")
 
     fun sendMessage(fromUserId: Int, toUserId: Int, text: String) {
         val message = Message(generateMessageId(), fromUserId, text, setDate())
 
-        val chat =
-            findChatByUsers(fromUserId, toUserId) ?: generateChat(fromUserId, toUserId)
-
-        chat.messages.add(message)
-        chat.unreadMessagesID.add(message.id)
+        findChatByUsers(fromUserId, toUserId) ?: generateChat(fromUserId, toUserId)
+            .apply {
+                messages.add(message)
+                unreadMessagesID.add(message.id)
+            }
     }
 
     fun deleteMessage(chatId: Int, messageId: Int): Boolean {
@@ -57,33 +59,26 @@ object ChatService {
             message.isDeleted -> {
                 false
             }
+
             else -> {
-                message.isDeleted = true
-                chat.unreadMessagesID.remove(messageId)
+                message.apply { isDeleted = true }
+                    .also { chat.unreadMessagesID.remove(messageId) }
                 true
             }
         }
     }
 
     fun editMessage(chatId: Int, messageId: Int, text: String): Boolean {
-        val chat = chats.findChatById(chatId)
-        val message = chat.messages.findMessageById(messageId)
-        return when {
-            message.isDeleted -> {
-                false
-            }
-            else -> {
-                message.text = text
-                true
-            }
+        val message = chats.findChatById(chatId)
+            .messages.findMessageById(messageId)
+        return if (message.isDeleted) false else {
+            message.text = text
+            true
         }
     }
 
-    private fun generateChat(fromUserId: Int, toUserId: Int): Chat {
-        val newChat = Chat(setOf(fromUserId, toUserId))
-        chats[generateChatId()] = newChat
-        return newChat
-    }
+    private fun generateChat(fromUserId: Int, toUserId: Int): Chat =
+        Chat(setOf(fromUserId, toUserId)).also { chats[generateChatId()] = it }
 
     private fun generateChatId(): Int = nextChatId++
 
@@ -95,9 +90,11 @@ object ChatService {
 
     private fun setDate(): Long = System.currentTimeMillis()
 
-    private fun Map<Int, Chat>.getUserChats(userId: Int): List<Chat> = this.values.filter { chat ->
-        !chat.isDeleted && userId in chat.participants
-    }
+    private fun Map<Int, Chat>.getUserChats(userId: Int): List<Chat> =
+        this.values.asSequence()
+            .filter { chat ->
+                !chat.isDeleted && userId in chat.participants
+            }.toList()
 
     private fun findChatByUsers(user1: Int, user2: Int): Chat? = chats.values.find { chat ->
         !chat.isDeleted &&
@@ -110,9 +107,5 @@ object ChatService {
     private fun Map<Int, Chat>.findChatById(chatId: Int) =
         this[chatId] ?: throw ChatNotFoundException("Чат не найден")
 
-    fun clear(){
-       chats.clear()
-       nextChatId = 1
-       nextMessageId = 1
-    }
+    fun clear() = this.chats.clear().also { nextChatId = 1 }.also { nextMessageId = 1 }
 }
