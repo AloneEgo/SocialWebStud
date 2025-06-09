@@ -27,16 +27,16 @@ object ChatService {
         val chat = findChatByUsers(userId, buddyId)
             ?: throw ChatNotFoundException("Чат не найден")
 
-        val messages = chat.messages
-            .asSequence()
+        return chat.messages
+            .asReversed() // "ленивая" операция
+            .asSequence() // "ленивая" операция
             .filter { !it.isDeleted }
+            .take(messagesCount)
             .toList()
-            .takeLast(messagesCount)
-
-        val messageIds = messages.map { it.id }
-        markMessagesAsRead(chat, messageIds)
-
-        return messages
+            .asReversed() // возвращаем в хронологическом порядке
+            .also { messages -> // Вернёт объект, на котором вызывается метод
+                markMessagesAsRead(chat, messages.map { it.id })
+            }
     }
 
     fun deleteChat(chatId: Int) =
